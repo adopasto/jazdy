@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Záznam jazdy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="record-section">
+        <h2>Posledné záznamy </h2>
+        <div class="button-container">
+            <a href="index.html" class="new-record-button">Pridať ďalší záznam</a>
+        </div>
+        <table id="recordTable">
+            <thead>
+                <tr>
+                    <th>Meno</th>
+                    <th>Vozidlo</th>
+                    <th>Posádka</th>
+                    <th>KM pred jazdou</th>
+                    <th>KM po jazde</th>
+                    <th>Dátum</th>
+                    <th>Čas odjazdu</th>
+                    <th>Čas príjazdu</th>
+                    <th>Cieľ jazdy</th>
+                    <th>Účel jazdy</th>
+                    <th>Detail jazdy</th>
+                </tr>
+            </thead>
+            <div id="successMessage" class="success-message"></div>
+            <tbody id="recordTableBody">
+            </tbody>
+        </table>
+        <div class="button-container">
+    <!--<a href="export_pdf.php" class="export-button">Exportovať PDF</a>-->
+</div>
+    </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const recordsPerPage = 10;
+    let records = [];
+    
+    const recordTableBody = document.getElementById('recordTableBody');
+
+    function updateTable() {
+        recordTableBody.innerHTML = '';
+
+        for (let i = 0; i < records.length; i++) {
+            const record = records[i];
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${record.Meno}</td>
+                <td>${record.Vozidlo}</td>
+                <td>${record['Posádka']}</td>
+                <td>${record['KM pred jazdou']}</td>
+                <td>${record['KM po jazde']}</td>
+                <td>${record.Dátum}</td>
+                <td>${record['Čas odjazdu']}</td>
+                <td>${record['Čas príjazdu']}</td>
+                <td>${record['Cieľ jazdy']}</td>
+                <td>${record['Účel jazdy']}</td>
+                <td>${record['Detaily jazdy']}</td>
+            `;
+            recordTableBody.appendChild(row);
+        }
+    }
+
+    fetch('fetch_records.php')
+        .then(response => response.json())
+        .then(data => {
+            records = data;
+            updateTable();
+        })
+        .catch(error => console.error('Error fetching records:', error));
+
+    const queryParams = new URLSearchParams(window.location.search);
+    if (queryParams.get('success') === 'true') {
+        var successMessage = document.getElementById('successMessage');
+        successMessage.textContent = 'Jazda úspešne zaznamenaná!';
+        successMessage.style.display = 'block';
+
+        setTimeout(function () {
+            successMessage.style.display = 'none';
+        }, 6000); // Show for 6 seconds
+    }
+});
+
+    </script>
+</body>
+</html>
