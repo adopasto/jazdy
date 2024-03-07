@@ -1,3 +1,11 @@
+<?php
+    session_start();
+
+    if (!isset($_SESSION['id'])) {
+        header('Location: login.php');
+        exit();
+    }
+?>
 <!DOCTYPE html>
 <html lang="sk">
 <head>
@@ -120,6 +128,7 @@
         </form>
         <div class="button-container">
         <a href="records.html" class="records-button">Zobraziť posledné záznamy</a>
+        <a href="logout.php" class="logout-button">Odhlásenie</a>
     </div>
     </div>
   <!-- JS -->

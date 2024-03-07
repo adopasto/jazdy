@@ -1,5 +1,11 @@
 <?php
 
+session_start();
+if (!isset($_SESSION['id'])) {
+    header('Location: login.php');
+    exit();
+}
+
 $servername = "mysql80.r1.websupport.sk";
 $username = "admin_dhzo";
 $password = "Dharma108";
