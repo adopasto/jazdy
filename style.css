@@ -244,6 +244,11 @@ select:focus {
     margin-top: 10px;
 }
 
+div.error {
+  color: red;
+  margin-top: 10px;
+}
+
 .new-record-button {
   display: inline-block;
   padding: 10px 20px;

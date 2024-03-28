@@ -13,13 +13,18 @@
 <body>
     <div class="container">
         <h1>Login</h1>
-        <?php if (isset($_SESSION['error'])):?>
+        <?php             
+        if (isset($_SESSION['error'])):?>
             <div class="error-message flash-message">
                 <?php 
                     echo $_SESSION['error'];
                     unset($_SESSION['error']);
                 ?>
-            </div>            
+            </div>    
+        <?php elseif (isset($_SESSION['success'])):?>
+            <div class="">
+                Užívateľ bol vytvorený    
+            </div>
         <?php endif;?>        
         <form action="process_login.php" method="post">
             <div class="row-full">
