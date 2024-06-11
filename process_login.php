@@ -14,16 +14,21 @@ $password = hash('sha256', $data['password']);
 $stmt->bind_param('is', $data['id'], $password);
 $stmt->execute();
 $result = $stmt->get_result();
+$user = $result->fetch_assoc();
 
 session_start();
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();    
-    $_SESSION['id'] = $row['id'];
-    $_SESSION['username'] = $row['firstname'] . ' ' . $row['lastname'];
+if (empty($user)) {
+    $_SESSION['error'] = 'Invalid username or password.';
+    header('Location: login.php');
+}
+elseif ($user['status'] === STATUS_INACTIVE) {
+    $_SESSION['error'] = 'Your account is not activated. Please check your email for activation link.';
+    header('Location: login.php');
+}
+else {
+    $_SESSION['id'] = $user['id'];
+    $_SESSION['username'] = $user['firstname'] . ' ' . $user['lastname'];
     header('Location: index.php');    
-} else {
-    $_SESSION['error'] = 'Invalid username or password.';    
-    header('Location: login.php');    
 }
 
 exit();

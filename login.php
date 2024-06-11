@@ -1,4 +1,4 @@
-<?php
+<?php    
     session_start();
     include_once 'fetch_users.php';
 ?>
@@ -7,7 +7,7 @@
 
 <head>
     <title>Login</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>

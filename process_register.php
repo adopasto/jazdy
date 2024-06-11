@@ -5,6 +5,8 @@ if (!isset($_POST['data'])) {
     exit();
 }
 
+include_once 'functions.php';
+
 session_start();
 $data = $_POST['data'];
 $_SESSION['data'] = $data;
@@ -67,13 +69,29 @@ if ($result->num_rows > 0) {
     exit();
 }
 
+$activationKey = generateRandomString(16);
+$status = STATUS_INACTIVE;
 $password = hash('sha256', $data['password']);
-$sql = "INSERT INTO users (email, firstname, lastname, password) VALUES (?, ?, ?, ?)";
+$sql = "INSERT INTO users (email, firstname, lastname, password, activation_key, status) VALUES (?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param('ssss', $data['email'], $data['firstname'], $data['lastname'], $password);
+$stmt->bind_param('sssssi', $data['email'], $data['firstname'], $data['lastname'], $password, $activationKey, $status);
 
 if ($stmt->execute()) {
-    $_SESSION['success'] = 'User created successfully';
+    $_SESSION['success'] = 'User created successfully.';
+
+    $to = $data['email'];
+    $subject = 'Activate your account';    
+    $message .= "Please click the following link to activate your account:<br><br>";
+    $message .= '<a href="http://localhost/activate.php?key=' . urlencode($activationKey) . '">Activate your account</a>';
+    $headers = "From: admin@knihajazd.sk\r\n";
+    $headers .= "Content-type: text/html\r\n";
+
+    $sent = mail($to, $subject, $message, $headers);
+
+    if (!$sent) {
+        $_SESSION['success'] .= ' However, the email could not be sent. Please contact our customer support.';        
+    }
+
     header('Location: login.php');
     exit();
 } else {
